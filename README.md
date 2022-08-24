@@ -1,2 +1,4 @@
-# uefi-pong
-Simple operating system which runs on UEFI only and run only pong
+# UEFI Assembly template
+Compile program and follow next steps in UEFI SHELL:
+1. `navigate to folder where is your program (FS0: by default)`
+2. `name_of_program (pong by default)`
