@@ -1,30 +1,25 @@
 format pe64 dll efi
 entry main
-
+ 
 section '.text' code executable readable
-
-include 'efi.inc'
-
+ 
+include 'uefi.inc'
+ 
 main:
-    sub rsp, 4*8              ; reserve space for 4 arguments
-
-    mov [Handle], rcx         ; ImageHandle
-    mov [SystemTable], rdx    ; pointer to SystemTable
-
-    lea rdx, [_hello]
-    mov rcx, [SystemTable]
-    mov rcx, [rcx + EFI_SYSTEM_TABLE.ConOut]
-    call [rcx + SIMPLE_TEXT_OUTPUT_INTERFACE.OutputString]
-
-    add rsp, 4*8
-    mov eax, EFI_SUCCESS
+    ; initialize UEFI library
+    InitializeLib
+    jc @f
+ 
+    ; call uefi function to print to screen
+    uefi_call_wrapper ConOut, OutputString, ConOut, _hello
+	uefi_call_wrapper ConOut, OutputString, ConOut, _str
+ 
+@@: mov eax, EFI_SUCCESS
     retn
-
-
+ 
 section '.data' data readable writeable
-
-Handle      dq ?
-SystemTable dq ?
-_hello      du 'Hello World',13,10
+ 
+_hello  du 'Hello world',13,10,0
+_str    du 'Just another string',13,10,0
 
 section '.reloc' fixups data discardable
